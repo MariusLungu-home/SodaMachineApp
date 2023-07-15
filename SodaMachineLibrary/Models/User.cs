@@ -4,7 +4,7 @@
     {
         private string name;
 
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get => name; set => name = value; }
         public double Balance { get; set; }
         public double TotalSpent { get; set; }
