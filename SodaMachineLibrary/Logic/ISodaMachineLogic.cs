@@ -4,16 +4,16 @@ namespace SodaMachineLibrary.Logic;
 
 public interface ISodaMachineLogic
 {
-    List<Beverage> ListTypesOfSoda();
-    double MoneyInserted(double insertedAmount);
-    double GetSodaPrice(int sodaId);
-    void RequestSoda(Beverage beverage);
+    List<Soda> ListTypesOfSoda();
+    decimal MoneyInserted(decimal insertedAmount);
+    decimal GetSodaPrice(int sodaId);
+    void RequestSoda(Soda beverage);
     void IssueFullRefund();
-    double GetMoneyInsertedTotal(double totalInsertedAmount);
-    double CalculateChange();
-    void EmptyMoneyFromMachine(double soldAmount);
+    decimal GetMoneyInsertedTotal(decimal totalInsertedAmount);
+    decimal CalculateChange();
+    void EmptyMoneyFromMachine(decimal soldAmount);
     List<Coin> GetCoinInventory();
     Coin AddCoinToInventory(Coin coin);
-    double GetCurrentIncome();
-    double GetTotalIncome();
+    decimal GetCurrentIncome();
+    decimal GetTotalIncome();
 }

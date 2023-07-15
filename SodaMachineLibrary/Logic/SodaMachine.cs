@@ -49,7 +49,7 @@ public class SodaMachine : ISodaMachineLogic
         throw new NotImplementedException();
     }
 
-    public List<Beverage> ListTypesOfSoda()
+    public List<Soda> ListTypesOfSoda()
     {
         throw new NotImplementedException();
     }
@@ -59,7 +59,7 @@ public class SodaMachine : ISodaMachineLogic
         throw new NotImplementedException();
     }
 
-    public void RequestSoda(Beverage beverage)
+    public void RequestSoda(Soda beverage)
     {
         throw new NotImplementedException();
     }
