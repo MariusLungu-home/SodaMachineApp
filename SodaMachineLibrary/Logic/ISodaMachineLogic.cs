@@ -1,8 +1,8 @@
-﻿using SodaMachine.Models;
+﻿using SodaMachineLibrary.Models;
 
-namespace SodaMachine.Service;
+namespace SodaMachineLibrary.Logic;
 
-public interface ISodaMachine
+public interface ISodaMachineLogic
 {
     List<Beverage> ListTypesOfSoda();
     double MoneyInserted(double insertedAmount);
@@ -13,8 +13,7 @@ public interface ISodaMachine
     double CalculateChange();
     void EmptyMoneyFromMachine(double soldAmount);
     List<Coin> GetCoinInventory();
-    void AddCoinToInventory(Coin coin);
+    Coin AddCoinToInventory(Coin coin);
     double GetCurrentIncome();
     double GetTotalIncome();
-
 }
