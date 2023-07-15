@@ -1,6 +1,6 @@
 ﻿namespace SodaMachineLibrary.Models;
 
-public class Soda
+public class SodaModel
 {
     private string? _name;
 

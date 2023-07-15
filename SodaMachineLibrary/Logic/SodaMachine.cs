@@ -4,42 +4,47 @@ namespace SodaMachineLibrary.Logic;
 
 public class SodaMachine : ISodaMachineLogic
 {
-    public void AddCoinToInventory(Coin coin)
+    public CoinModel AddCoinToInventory(List<CoinModel> coin)
     {
         throw new NotImplementedException();
     }
 
-    public double CalculateChange()
+    public void AddToInventory(List<SodaModel> sodaModels)
     {
         throw new NotImplementedException();
     }
 
-    public void EmptyMoneyFromMachine(double soldAmount)
+    public decimal EmptyMoneyFromMachine()
     {
         throw new NotImplementedException();
     }
 
-    public List<Coin> GetCoinInventory()
+    public List<CoinModel> GetCoinInventory()
     {
         throw new NotImplementedException();
     }
 
-    public double GetCurrentIncome()
+    public decimal GetCurrentIncome()
     {
         throw new NotImplementedException();
     }
 
-    public double GetMoneyInsertedTotal(double totalInsertedAmount)
+    public List<SodaModel> GetInventory()
     {
         throw new NotImplementedException();
     }
 
-    public double GetSodaPrice(int sodaId)
+    public decimal GetMoneyInsertedTotal(decimal totalInsertedAmount)
     {
         throw new NotImplementedException();
     }
 
-    public double GetTotalIncome()
+    public decimal GetSodaPrice(int sodaId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public decimal GetTotalIncome()
     {
         throw new NotImplementedException();
     }
@@ -49,22 +54,17 @@ public class SodaMachine : ISodaMachineLogic
         throw new NotImplementedException();
     }
 
-    public List<Soda> ListTypesOfSoda()
+    public List<SodaModel> ListTypesOfSoda()
     {
         throw new NotImplementedException();
     }
 
-    public double MoneyInserted(double insertedAmount)
+    public decimal MoneyInserted(decimal insertedAmount)
     {
         throw new NotImplementedException();
     }
 
-    public void RequestSoda(Soda beverage)
-    {
-        throw new NotImplementedException();
-    }
-
-    Coin ISodaMachineLogic.AddCoinToInventory(Coin coin)
+    public (SodaModel, List<CoinModel>, string) RequestSoda(SodaModel sodaModel)
     {
         throw new NotImplementedException();
     }
