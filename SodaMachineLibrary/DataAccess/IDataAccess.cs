@@ -8,7 +8,7 @@ public interface IDataAccess
     
     SodaModel SodaInventory_GetSoda(SodaModel sodaModel);
     
-    void SodaInventory_AddSodas(List<SodaModel> sodaModel);
+    void SodaInventory_AddSodas(List<SodaModel> sodas);
 
     List<SodaModel> SodaInventory_GetAll();
 

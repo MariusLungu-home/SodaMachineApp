@@ -1,10 +1,15 @@
-﻿using SodaMachineLibrary.Models;
+﻿using SodaMachineLibrary.DataAccess;
+using SodaMachineLibrary.Models;
 
 namespace SodaMachineLibrary.Logic;
 
-public class SodaMachine : ISodaMachineLogic
+public class SodaMachineLogic : ISodaMachineLogic
 {
-    public CoinModel AddCoinToInventory(List<CoinModel> coin)
+    public SodaMachineLogic(IDataAccess dataAccess)
+    {
+    }
+
+    public void AddCoinToInventory(List<CoinModel> coins)
     {
         throw new NotImplementedException();
     }

@@ -28,7 +28,7 @@ public interface ISodaMachineLogic
 
     List<CoinModel> GetCoinInventory();
     
-    CoinModel AddCoinToInventory(List<CoinModel> coin);
+    void AddCoinToInventory(List<CoinModel> coins);
     
     decimal GetCurrentIncome();
 
