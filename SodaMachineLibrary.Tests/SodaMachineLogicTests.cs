@@ -35,6 +35,7 @@ public class SodaMachineLogicTests
     {
         MockDataAccess dataAccess = new();
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
+        
         List<SodaModel> sodas = new List<SodaModel>
         {
             new SodaModel { Name = "Cola", Price = 1.00M },
@@ -44,6 +45,7 @@ public class SodaMachineLogicTests
         logic.AddToInventory(sodas);
         int expected = 7;
         int actual = dataAccess.SodaInventory.Count();
+        
         Assert.Equal(expected, actual);
     }
 
@@ -57,10 +59,9 @@ public class SodaMachineLogicTests
         decimal actual = logic.EmptyMoneyFromMachine();
 
         Assert.Equal(expected, actual);
-        
         expected = 0;
-        (_, actual, _) = dataAccess.MachineInfo;
 
+        (_, actual, _) = dataAccess.MachineInfo;
         Assert.Equal(expected, actual);
     }
 
@@ -69,8 +70,46 @@ public class SodaMachineLogicTests
     {
         MockDataAccess dataAccess = new();
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
+        
         List<CoinModel> expected = dataAccess.CoinInventory;
         List<CoinModel> actual = logic.GetCoinInventory();
+        
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void GetCurrentIncome_ShouldWork()
+    {
+        MockDataAccess dataAccess = new();
+        SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
+    
+        var (_, expected, _) = dataAccess.MachineInfo;
+        decimal actual = logic.GetCurrentIncome();
+     
+        Assert.Equal(expected, actual);
+    }
+
+    public void GetMoneyInsertedTotal_ShouldWork()
+    {
+        MockDataAccess dataAccess = new();
+        SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
+
+        decimal expected = 0.65M;
+        dataAccess.UserCredit.Add("test", expected);
+        decimal actual = logic.GetMoneyInsertedTotal("test");
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void GetInventory_ShouldWork()
+    {
+        MockDataAccess dataAccess = new();
+        SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
+        
+        List<SodaModel> expected = dataAccess.SodaInventory;
+        List<SodaModel> actual = logic.GetInventory();
+        
         Assert.Equal(expected, actual);
     }
 }

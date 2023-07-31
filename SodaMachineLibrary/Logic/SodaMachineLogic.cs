@@ -39,7 +39,7 @@ public class SodaMachineLogic : ISodaMachineLogic
         throw new NotImplementedException();
     }
 
-    public decimal GetMoneyInsertedTotal(decimal totalInsertedAmount)
+    public decimal GetMoneyInsertedTotal(string userId)
     {
         throw new NotImplementedException();
     }

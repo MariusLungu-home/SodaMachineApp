@@ -18,7 +18,7 @@ public interface ISodaMachineLogic
 
     void IssueFullRefund();
 
-    decimal GetMoneyInsertedTotal(decimal totalInsertedAmount);
+    decimal GetMoneyInsertedTotal(string userId);
 
     void AddToInventory(List<SodaModel> sodaModels);
 
