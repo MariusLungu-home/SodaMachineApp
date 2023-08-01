@@ -1,36 +1,39 @@
 ﻿using SodaMachineLibrary.Models;
-using System.Xml.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace SodaMachineLibrary.Logic;
-
-public interface ISodaMachineLogic
+namespace SodaMachineLibrary.Logic
 {
-    List<SodaModel> ListTypesOfSoda();
+    public interface ISodaMachineLogic
+    {
+        List<SodaModel> ListTypesOfSoda();
 
-    // Takes in an amount of money and returns the amount of money inserted
-    decimal MoneyInserted(decimal insertedAmount);
-    
-    // Get the price of a soda
-    decimal GetSodaPrice(int sodaId);
+        // Takes in an amount and returns the total deposited so far
+        decimal MoneyInserted(string userId, decimal monetaryAmount);
 
-    // SodaModel or null, List<Coint> Change, string ErrorMessage
-    (SodaModel, List<CoinModel>, string) RequestSoda(SodaModel sodaModel);
+        // Gets the overall price for sodas - there is no individual pricing
+        decimal GetSodaPrice();
 
-    void IssueFullRefund();
+        // SodaModel (or null), List<Coin> Change, string ErrorMessage
+        (SodaModel soda, List<CoinModel> change, string errorMessage) RequestSoda(SodaModel soda);
 
-    decimal GetMoneyInsertedTotal(string userId);
+        void IssueFullRefund(string userId);
 
-    void AddToInventory(List<SodaModel> sodaModels);
+        decimal GetMoneyInsertedTotal(string userId);
 
-    List<SodaModel> GetInventory();
+        void AddToSodaInventory(List<SodaModel> sodas);
 
-    decimal EmptyMoneyFromMachine();
+        List<SodaModel> GetSodaInventory();
 
-    List<CoinModel> GetCoinInventory();
-    
-    void AddCoinToInventory(List<CoinModel> coins);
-    
-    decimal GetCurrentIncome();
+        decimal EmptyMoneyFromMachine();
 
-    decimal GetTotalIncome();
+        List<CoinModel> GetCoinInventory();
+
+        void AddToCoinInventory(List<CoinModel> coins);
+
+        decimal GetCurrentIncome();
+
+        decimal GetTotalIncome();
+    }
 }
