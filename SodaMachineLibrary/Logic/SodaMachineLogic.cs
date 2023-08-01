@@ -1,81 +1,180 @@
 ﻿using SodaMachineLibrary.DataAccess;
 using SodaMachineLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SodaMachineLibrary.Logic
 {
     public class SodaMachineLogic : ISodaMachineLogic
     {
+        private IDataAccess _dataAccess;
         public SodaMachineLogic(IDataAccess dataAccess)
         {
-
+            _dataAccess = dataAccess;
         }
 
         public void AddToCoinInventory(List<CoinModel> coins)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dataAccess.CoinInventory_AddCoin(coins);
+            }
+            catch (Exception)
+            {
+                throw;
+            }       
         }
 
         public void AddToSodaInventory(List<SodaModel> sodas)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dataAccess.SodaInventory_AddSodas(sodas);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public decimal EmptyMoneyFromMachine()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dataAccess.MachineInfo_EmptyCash();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public List<CoinModel> GetCoinInventory()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dataAccess.CoinInventory_GetAll();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public decimal GetCurrentIncome()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dataAccess.MachineInfo_CashOnHand();
+            }
+            catch (Exception)
+            {
+                throw;
+            }        
         }
 
         public decimal GetMoneyInsertedTotal(string userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dataAccess.UserCredit_GetTotal(userId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public List<SodaModel> GetSodaInventory()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dataAccess.SodaInventory_GetAll();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public decimal GetSodaPrice()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dataAccess.MachineInfo_SodaPrice();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public decimal GetTotalIncome()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dataAccess.MachineInfo_TotalIncome();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public void IssueFullRefund(string userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dataAccess.UserCredit_Clear(userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public List<SodaModel> ListTypesOfSoda()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dataAccess.SodaInventory_GetTypes();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public decimal MoneyInserted(string userId, decimal monetaryAmount)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dataAccess.UserCredit_Insert(userId, monetaryAmount);
+                return monetaryAmount;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }        
         }
 
         public (SodaModel soda, List<CoinModel> change, string errorMessage) RequestSoda(SodaModel soda)
         {
-            throw new NotImplementedException();
+            try
+            {
+               var expectedSoda = _dataAccess.SodaInventory_GetSoda(soda);
+
+               return (expectedSoda, new List<CoinModel>(), "");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

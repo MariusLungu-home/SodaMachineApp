@@ -44,7 +44,7 @@ public class SodaMachineLogicTests
         };
 
         logic.AddToSodaInventory(sodas);
-        int expected = 7;
+        int expected = 10;
         int actual = dataAccess.SodaInventory.Count();
 
         Assert.Equal(expected, actual);
@@ -220,7 +220,7 @@ public class SodaMachineLogicTests
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
 
         string user = "test";
-        SodaModel expectedSoda = new SodaModel { Name = "Coke", SlotOccupied = "1" };
+        SodaModel expectedSoda = new SodaModel { Name = "Cola", SlotOccupied = "1" };
         var machineInitialState = dataAccess.MachineInfo;
 
         dataAccess.UserCredit[user] = 0.75M;
