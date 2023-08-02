@@ -174,7 +174,9 @@ namespace SodaMachineLibrary.Logic
 
                 if (userCredit == sodaCost) //no change needed
                 {
-                    var sodaToReturn = _db.SodaInventory_GetSoda(soda);
+                    var sodaToReturn = _db.SodaInventory_GetSoda(soda, userCredit);
+                    _db.UserCredit_Clear(userId);
+
                     output = (sodaToReturn, new List<CoinModel>(), string.Empty);
                 }
                 else if (userCredit > sodaCost) //change required

@@ -109,8 +109,13 @@ public class MockDataAccess : IDataAccess
         return SodaInventory;
     }
 
-    public SodaModel SodaInventory_GetSoda(SodaModel sodaModel)
+    public SodaModel SodaInventory_GetSoda(SodaModel sodaModel, decimal amount)
     {
+        var info = MachineInfo;
+        info.cashOnHand += amount;
+        info.totalIncome += amount;
+        MachineInfo = info;
+
         return SodaInventory.FirstOrDefault(x => x.Name == sodaModel.Name);
     }
 
@@ -152,6 +157,11 @@ public class MockDataAccess : IDataAccess
     {
         UserCredit.TryGetValue(userId, out decimal currentCredit);
         return currentCredit;
+    }
+
+    public void MachineInfo_AddIncome(decimal amount)
+    {
+        throw new NotImplementedException();
     }
 
     #endregion

@@ -49,7 +49,7 @@ public class DataAccess : IDataAccess
         throw new NotImplementedException();
     }
 
-    public SodaModel SodaInventory_GetSoda(SodaModel sodaModel)
+    public SodaModel SodaInventory_GetSoda(SodaModel sodaModel, decimal amount)
     {
         throw new NotImplementedException();
     }

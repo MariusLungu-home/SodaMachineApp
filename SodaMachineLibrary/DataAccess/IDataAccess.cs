@@ -6,7 +6,7 @@ public interface IDataAccess
 {
     List<SodaModel> SodaInventory_GetTypes();
     
-    SodaModel SodaInventory_GetSoda(SodaModel sodaModel);
+    SodaModel SodaInventory_GetSoda(SodaModel sodaModel, decimal amount);
     
     void SodaInventory_AddSodas(List<SodaModel> sodas);
 
@@ -27,7 +27,7 @@ public interface IDataAccess
     decimal MachineInfo_CashOnHand();
 
     decimal MachineInfo_TotalIncome();
-    
+
     List<CoinModel> CoinInventory_WithdrawCoins(decimal coinValue, int quantity);
 
     List<CoinModel> CoinInventory_GetAll();
