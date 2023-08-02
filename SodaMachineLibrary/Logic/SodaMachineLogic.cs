@@ -5,17 +5,17 @@ namespace SodaMachineLibrary.Logic
 {
     public class SodaMachineLogic : ISodaMachineLogic
     {
-        private IDataAccess _dataAccess;
+        private IDataAccess _db;
         public SodaMachineLogic(IDataAccess dataAccess)
         {
-            _dataAccess = dataAccess;
+            _db = dataAccess;
         }
 
         public void AddToCoinInventory(List<CoinModel> coins)
         {
             try
             {
-                _dataAccess.CoinInventory_AddCoin(coins);
+                _db.CoinInventory_AddCoin(coins);
             }
             catch (Exception)
             {
@@ -27,7 +27,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                _dataAccess.SodaInventory_AddSodas(sodas);
+                _db.SodaInventory_AddSodas(sodas);
             }
             catch (Exception)
             {
@@ -40,7 +40,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                return _dataAccess.MachineInfo_EmptyCash();
+                return _db.MachineInfo_EmptyCash();
             }
             catch (Exception)
             {
@@ -52,7 +52,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                return _dataAccess.CoinInventory_GetAll();
+                return _db.CoinInventory_GetAll();
             }
             catch (Exception)
             {
@@ -64,7 +64,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                return _dataAccess.MachineInfo_CashOnHand();
+                return _db.MachineInfo_CashOnHand();
             }
             catch (Exception)
             {
@@ -76,7 +76,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                return _dataAccess.UserCredit_GetTotal(userId);
+                return _db.UserCredit_GetTotal(userId);
             }
             catch (Exception)
             {
@@ -88,7 +88,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                return _dataAccess.SodaInventory_GetAll();
+                return _db.SodaInventory_GetAll();
             }
             catch (Exception)
             {
@@ -101,7 +101,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                return _dataAccess.MachineInfo_SodaPrice();
+                return _db.MachineInfo_SodaPrice();
             }
             catch (Exception)
             {
@@ -114,7 +114,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                return _dataAccess.MachineInfo_TotalIncome();
+                return _db.MachineInfo_TotalIncome();
             }
             catch (Exception)
             {
@@ -127,7 +127,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                _dataAccess.UserCredit_Clear(userId);
+                _db.UserCredit_Clear(userId);
             }
             catch (Exception)
             {
@@ -140,7 +140,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                return _dataAccess.SodaInventory_GetTypes();
+                return _db.SodaInventory_GetTypes();
             }
             catch (Exception)
             {
@@ -153,7 +153,7 @@ namespace SodaMachineLibrary.Logic
         {
             try
             {
-                _dataAccess.UserCredit_Insert(userId, monetaryAmount);
+                _db.UserCredit_Insert(userId, monetaryAmount);
                 return monetaryAmount;
             }
             catch (Exception)
@@ -163,13 +163,30 @@ namespace SodaMachineLibrary.Logic
             }        
         }
 
-        public (SodaModel soda, List<CoinModel> change, string errorMessage) RequestSoda(SodaModel soda)
+        public (SodaModel soda, List<CoinModel> change, string errorMessage) RequestSoda(SodaModel soda, string userId)
         {
+            (SodaModel soda, List<CoinModel> change, string errorMessage) output = (null, null, "An unexpected error occured");
+
             try
             {
-               var expectedSoda = _dataAccess.SodaInventory_GetSoda(soda);
+                decimal userCredit = _db.UserCredit_GetTotal(userId);
+                decimal sodaCost = _db.MachineInfo_SodaPrice();
 
-               return (expectedSoda, new List<CoinModel>(), "");
+                if (userCredit == sodaCost) //no change needed
+                {
+                    var sodaToReturn = _db.SodaInventory_GetSoda(soda);
+                    output = (sodaToReturn, new List<CoinModel>(), string.Empty);
+                }
+                else if (userCredit > sodaCost) //change required
+                {
+
+                }
+                else //not enough money
+                {
+                    output = (null, new List<CoinModel>(), "User did not provide enough change");
+                }
+
+                return output;
             }
             catch (Exception)
             {

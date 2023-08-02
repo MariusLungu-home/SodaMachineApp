@@ -47,6 +47,8 @@ public class MockDataAccess : IDataAccess
 
         SodaInventory.Add(new SodaModel { Name = "Sprite", SlotOccupied = "3" });
         SodaInventory.Add(new SodaModel { Name = "Sprite", SlotOccupied = "3" });
+
+        UserCredit.Add("test", 1M);
     }
 
     #endregion

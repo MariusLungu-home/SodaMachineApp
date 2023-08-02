@@ -18,14 +18,13 @@ public class SodaMachineLogicTests
         List<CoinModel> coins = new List<CoinModel>
         {
             new CoinModel { Name = "Quarter", Value = 0.25M },
-            new CoinModel { Name = "Dime", Value = 0.10M },
-            new CoinModel { Name = "Nickel", Value = 0.05M },
-            new CoinModel { Name = "Penny", Value = 0.01M }
+            new CoinModel { Name = "Quarter", Value = 0.25M },
+            new CoinModel { Name = "Dime", Value = 0.1M },
         };
 
         logic.AddToCoinInventory(coins);
 
-        int expected = 5;
+        int expected = 6;
         int actual = dataAccess.CoinInventory.Where(x => x.Name == "Quarter").Count();
 
         Assert.Equal(expected, actual);
@@ -96,9 +95,9 @@ public class SodaMachineLogicTests
         MockDataAccess dataAccess = new();
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
 
-        decimal expected = 0.65M;
-        dataAccess.UserCredit.Add("test", expected);
-        decimal actual = logic.GetMoneyInsertedTotal("test");
+        decimal expected = 1M;
+        dataAccess.UserCredit.Add("test2", expected);
+        decimal actual = logic.GetMoneyInsertedTotal("test2");
 
         Assert.Equal(expected, actual);
     }
@@ -175,7 +174,7 @@ public class SodaMachineLogicTests
         MockDataAccess dataAccess = new();
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
 
-        string user1 = "test";
+        string user1 = "user1";
         decimal money = 0.25M;
 
         logic.MoneyInserted(user1, money);
@@ -197,8 +196,8 @@ public class SodaMachineLogicTests
         MockDataAccess dataAccess = new();
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
 
-        string user1 = "test";
-        string user2 = "tim";
+        string user1 = "user1";
+        string user2 = "user2";
 
         decimal user1money = 0.25M;
         decimal user2money = 0.10M;
@@ -223,9 +222,9 @@ public class SodaMachineLogicTests
         SodaModel expectedSoda = new SodaModel { Name = "Cola", SlotOccupied = "1" };
         var machineInitialState = dataAccess.MachineInfo;
 
-        dataAccess.UserCredit[user] = 0.75M;
+        dataAccess.UserCredit[user] = 1M;
 
-        var results = logic.RequestSoda(expectedSoda);
+        var results = logic.RequestSoda(expectedSoda, user);
 
         Assert.Equal(expectedSoda.Name, results.soda.Name);
         Assert.Equal(expectedSoda.SlotOccupied, results.soda.SlotOccupied);
@@ -247,12 +246,12 @@ public class SodaMachineLogicTests
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
 
         string user = "test";
-        SodaModel expectedSoda = new SodaModel { Name = "Coke", SlotOccupied = "1" };
+        SodaModel expectedSoda = new SodaModel { Name = "Cola", SlotOccupied = "1" };
         var machineInitialState = dataAccess.MachineInfo;
 
         dataAccess.UserCredit[user] = 0.5M;
 
-        var results = logic.RequestSoda(expectedSoda);
+        var results = logic.RequestSoda(expectedSoda, user);
 
         Assert.Null(results.soda);
 
@@ -278,7 +277,7 @@ public class SodaMachineLogicTests
 
         dataAccess.UserCredit[user] = 0.75M;
 
-        var results = logic.RequestSoda(expectedSoda);
+        var results = logic.RequestSoda(expectedSoda, user);
 
         Assert.Null(results.soda);
 
@@ -299,12 +298,12 @@ public class SodaMachineLogicTests
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
 
         string user = "test";
-        SodaModel expectedSoda = new SodaModel { Name = "Coke", SlotOccupied = "1" };
+        SodaModel expectedSoda = new SodaModel { Name = "Cola", SlotOccupied = "1" };
         var machineInitialState = dataAccess.MachineInfo;
 
         dataAccess.UserCredit[user] = 1M;
 
-        var results = logic.RequestSoda(expectedSoda);
+        var results = logic.RequestSoda(expectedSoda, user);
 
         Assert.Equal(expectedSoda.Name, results.soda.Name);
         Assert.Equal(expectedSoda.SlotOccupied, results.soda.SlotOccupied);
@@ -326,13 +325,13 @@ public class SodaMachineLogicTests
         SodaMachineLogic logic = new SodaMachineLogic(dataAccess);
 
         string user = "test";
-        SodaModel expectedSoda = new SodaModel { Name = "Coke", SlotOccupied = "1" };
+        SodaModel expectedSoda = new SodaModel { Name = "Cola", SlotOccupied = "1" };
         var machineInitialState = dataAccess.MachineInfo;
 
         dataAccess.UserCredit[user] = 1M;
         dataAccess.CoinInventory.RemoveAll(x => x.Value == 0.25M);
 
-        var results = logic.RequestSoda(expectedSoda);
+        var results = logic.RequestSoda(expectedSoda, user);
 
         Assert.Equal(expectedSoda.Name, results.soda.Name);
         Assert.Equal(expectedSoda.SlotOccupied, results.soda.SlotOccupied);
