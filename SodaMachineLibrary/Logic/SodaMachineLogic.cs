@@ -1,11 +1,15 @@
 ﻿using SodaMachineLibrary.DataAccess;
 using SodaMachineLibrary.Models;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace SodaMachineLibrary.Logic
 {
     public class SodaMachineLogic : ISodaMachineLogic
     {
-        private IDataAccess _db;
+        private readonly IDataAccess _db;
+
         public SodaMachineLogic(IDataAccess dataAccess)
         {
             _db = dataAccess;
@@ -13,187 +17,133 @@ namespace SodaMachineLibrary.Logic
 
         public void AddToCoinInventory(List<CoinModel> coins)
         {
-            try
-            {
-                _db.CoinInventory_AddCoin(coins);
-            }
-            catch (Exception)
-            {
-                throw;
-            }       
+            _db.CoinInventory_AddCoins(coins);
         }
 
         public void AddToSodaInventory(List<SodaModel> sodas)
         {
-            try
-            {
-                _db.SodaInventory_AddSodas(sodas);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            _db.SodaInventory_AddSodas(sodas);
         }
 
         public decimal EmptyMoneyFromMachine()
         {
-            try
-            {
-                return _db.MachineInfo_EmptyCash();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return _db.MachineInfo_EmptyCash();
         }
 
         public List<CoinModel> GetCoinInventory()
         {
-            try
-            {
-                return _db.CoinInventory_GetAll();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return _db.CoinInventory_GetAll();
         }
 
         public decimal GetCurrentIncome()
         {
-            try
-            {
-                return _db.MachineInfo_CashOnHand();
-            }
-            catch (Exception)
-            {
-                throw;
-            }        
+            return _db.MachineInfo_CashOnHand();
         }
 
         public decimal GetMoneyInsertedTotal(string userId)
         {
-            try
-            {
-                return _db.UserCredit_GetTotal(userId);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return _db.UserCredit_Total(userId);
         }
 
         public List<SodaModel> GetSodaInventory()
         {
-            try
-            {
-                return _db.SodaInventory_GetAll();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            return _db.SodaInventory_GetAll();
         }
 
         public decimal GetSodaPrice()
         {
-            try
-            {
-                return _db.MachineInfo_SodaPrice();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            return _db.MachineInfo_SodaPrice();
         }
 
         public decimal GetTotalIncome()
         {
-            try
-            {
-                return _db.MachineInfo_TotalIncome();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            return _db.MachineInfo_TotalIncome();
         }
 
         public void IssueFullRefund(string userId)
         {
-            try
-            {
-                _db.UserCredit_Clear(userId);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            _db.UserCredit_Clear(userId);
         }
 
         public List<SodaModel> ListTypesOfSoda()
         {
-            try
-            {
-                return _db.SodaInventory_GetTypes();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            return _db.SodaInventory_GetTypes();
         }
 
         public decimal MoneyInserted(string userId, decimal monetaryAmount)
         {
-            try
-            {
-                _db.UserCredit_Insert(userId, monetaryAmount);
-                return monetaryAmount;
-            }
-            catch (Exception)
-            {
+            _db.UserCredit_Insert(userId, monetaryAmount);
 
-                throw;
-            }        
+            return _db.UserCredit_Total(userId);
         }
 
         public (SodaModel soda, List<CoinModel> change, string errorMessage) RequestSoda(SodaModel soda, string userId)
         {
-            (SodaModel soda, List<CoinModel> change, string errorMessage) output = (null, null, "An unexpected error occured");
+            (SodaModel soda, List<CoinModel> change, string errorMessage) output = (null, new List<CoinModel>(), "An unexpected error occurred");
+            decimal userCredit = _db.UserCredit_Total(userId);
+            decimal sodaCost = _db.MachineInfo_SodaPrice();
 
-            try
+            if (userCredit >= sodaCost) // No change needed
             {
-                decimal userCredit = _db.UserCredit_GetTotal(userId);
-                decimal sodaCost = _db.MachineInfo_SodaPrice();
+                bool sodaInStock = _db.SodaInventory_CheckIfSodaInStock(soda);
 
-                if (userCredit == sodaCost) //no change needed
+                if (sodaInStock == false)
                 {
-                    var sodaToReturn = _db.SodaInventory_GetSoda(soda, userCredit);
-                    _db.UserCredit_Clear(userId);
-
-                    output = (sodaToReturn, new List<CoinModel>(), string.Empty);
+                    output.errorMessage = "Soda not in inventory.";
                 }
-                else if (userCredit > sodaCost) //change required
+                else
                 {
+                    try
+                    {
+                        var change = GetChange(sodaCost, userCredit);
 
+                        var sodaToReturn = _db.SodaInventory_GetSoda(soda, userCredit);
+                        _db.UserCredit_Clear(userId);
+                        output = (sodaToReturn, change, "");
+                    }
+                    catch (Exception ex)
+                    {
+                        output.errorMessage = "There is not enough coins to give you change.";
+                    }
                 }
-                else //not enough money
-                {
-                    output = (null, new List<CoinModel>(), "User did not provide enough change");
-                }
-
-                return output;
             }
-            catch (Exception)
+            else // Not enough money
             {
-                throw;
+                output = (null, new List<CoinModel>(), "User did not provide enough change.");
             }
+
+            return output;
+        }
+
+        private List<CoinModel> GetChange(decimal sodaCost, decimal userCredit)
+        {
+            decimal difference = userCredit - sodaCost;
+            List<CoinModel> output = new List<CoinModel>();
+
+            if (difference > 0)
+            {
+                int quarterCount = (int)Math.Floor(difference / 0.25M);
+                var quarters = _db.CoinInventory_WithdrawCoins(0.25M, quarterCount);
+                output.AddRange(quarters);
+                difference -= (quarters.Count * 0.25M);
+
+                int dimeCount = (int)Math.Floor(difference / 0.1M);
+                var dimes = _db.CoinInventory_WithdrawCoins(0.1M, dimeCount);
+                output.AddRange(dimes);
+                difference -= (dimes.Count * 0.1M);
+
+                int nickleCount = (int)Math.Floor(difference / 0.05M);
+                var nickles = _db.CoinInventory_WithdrawCoins(0.05M, nickleCount);
+                output.AddRange(nickles);
+                difference -= (nickles.Count * 0.05M);
+
+                if (difference > 0)
+                {
+                    throw new Exception("Could not make proper change.");
+                }
+            }
+
+            return output;
         }
     }
 }

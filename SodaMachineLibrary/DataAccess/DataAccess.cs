@@ -4,7 +4,7 @@ namespace SodaMachineLibrary.DataAccess;
 
 public class DataAccess : IDataAccess
 {
-    public void CoinInventory_AddCoin(List<CoinModel> coins)
+    public void CoinInventory_AddCoins(List<CoinModel> coins)
     {
         throw new NotImplementedException();
     }
@@ -39,7 +39,12 @@ public class DataAccess : IDataAccess
         throw new NotImplementedException();
     }
 
-    public void SodaInventory_AddSodas(List<SodaModel> sodaModel)
+    public void SodaInventory_AddSodas(List<SodaModel> sodas)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool SodaInventory_CheckIfSodaInStock(SodaModel soda)
     {
         throw new NotImplementedException();
     }
@@ -49,7 +54,7 @@ public class DataAccess : IDataAccess
         throw new NotImplementedException();
     }
 
-    public SodaModel SodaInventory_GetSoda(SodaModel sodaModel, decimal amount)
+    public SodaModel SodaInventory_GetSoda(SodaModel soda, decimal amount)
     {
         throw new NotImplementedException();
     }
@@ -69,12 +74,12 @@ public class DataAccess : IDataAccess
         throw new NotImplementedException();
     }
 
-    public decimal UserCredit_GetTotal(string userId)
+    public void UserCredit_Insert(string userId, decimal amount)
     {
         throw new NotImplementedException();
     }
 
-    public void UserCredit_Insert(string userId, decimal amount)
+    public decimal UserCredit_Total(string userId)
     {
         throw new NotImplementedException();
     }

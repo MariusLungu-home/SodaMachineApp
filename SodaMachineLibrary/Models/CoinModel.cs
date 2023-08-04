@@ -2,7 +2,7 @@
 {
     public class CoinModel
     {
-        public decimal Value { get; set; }
+        public decimal Amount { get; set; }
         public string Name { get; set; }
     }
 }
