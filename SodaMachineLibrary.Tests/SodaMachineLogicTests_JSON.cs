@@ -26,7 +26,7 @@ namespace SodaMachineLibrary.Tests
 
             logic.AddToCoinInventory(coins);
 
-            int expected = 12;
+            int expected = 16;
             int actual = da.CoinInventory_GetAll().Where(x => x.Name == "quarter").Count();
 
             Assert.Equal(expected, actual);
@@ -41,15 +41,18 @@ namespace SodaMachineLibrary.Tests
             List<SodaModel> sodas = new List<SodaModel>
             {
                 new SodaModel{ Name = "Coke", SlotOccupied = "1"},
-                new SodaModel{ Name = "Coke", SlotOccupied = "1"}
+                new SodaModel{ Name = "Coke", SlotOccupied = "1"},
+                new SodaModel{ Name = "RedBull", SlotOccupied = "5"}
             };
 
+            int expected = da.SodaInventory_GetAll().Where(x => x.Name == "Coke").Count();
+            
             logic.AddToSodaInventory(sodas);
 
-            int expected = 7;
-            int actual = da.SodaInventory.Where(x => x.Name == "Coke").Count();
+            int actual = da.SodaInventory_GetAll().Where(x => x.Name == "Coke").Count();
+            
 
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected + 2, actual);
         }
 
         [Fact]
