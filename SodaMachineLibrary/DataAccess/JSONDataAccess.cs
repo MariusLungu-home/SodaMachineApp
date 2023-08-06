@@ -18,7 +18,19 @@ namespace SodaMachineLibrary.DataAccess
 
         public JSONDataAccess()
         {
-            UserCredit = GetUserCredit();    
+            UserCredit = GetUserCredit();
+            MachineInfo = GetMachineInfo();
+        }
+
+        private (decimal sodaPrice, decimal cashOnHand, decimal totalIncome) GetMachineInfo()
+        {
+            // read the JSON file
+            var fileAsText = File.ReadAllText(_machineInfoFileLocation, Encoding.UTF8);
+            // convert the JSON to MachineInfo
+            var machineInfo = JsonConvert.DeserializeObject<MachineInfoModel>(fileAsText);
+            // return the MachineInfo
+            return (machineInfo.SodaPrice, machineInfo.CashOnHand, machineInfo.TotalIncome);
+
         }
 
         private Dictionary<string,decimal> GetUserCredit()
@@ -100,9 +112,7 @@ namespace SodaMachineLibrary.DataAccess
             // convert the JSON to MachineInfo
             var machineInfo = JsonConvert.DeserializeObject<MachineInfoModel>(fileAsText);
             // set the cash on hand to 0
-            machineInfo.SodaPrice = 0;
             machineInfo.CashOnHand = 0;
-            machineInfo.TotalIncome = 0;
             var updatedJson = JsonConvert.SerializeObject(machineInfo);
             // update the JSON file
             File.WriteAllText(_machineInfoFileLocation, updatedJson);
@@ -146,7 +156,7 @@ namespace SodaMachineLibrary.DataAccess
 
         public bool SodaInventory_CheckIfSodaInStock(SodaModel soda)
         {
-            throw new NotImplementedException();
+            return SodaInventory_GetAll().Exists(x => x.Name == soda.Name && x.SlotOccupied == soda.SlotOccupied);
         }
 
         public List<SodaModel> SodaInventory_GetAll()
@@ -161,7 +171,17 @@ namespace SodaMachineLibrary.DataAccess
 
         public SodaModel SodaInventory_GetSoda(SodaModel soda, decimal amount)
         {
-            throw new NotImplementedException();
+            var outputSoda = SodaInventory_GetAll().Where(x => x.Name == soda.Name && x.SlotOccupied == soda.SlotOccupied).FirstOrDefault();
+
+            if (outputSoda != null)
+            {
+                var info = MachineInfo;
+                info.cashOnHand += amount;
+                info.totalIncome += amount;
+                MachineInfo = info;
+            }
+
+            return outputSoda;
         }
 
         public List<SodaModel> SodaInventory_GetTypes()
