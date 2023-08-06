@@ -119,7 +119,7 @@ namespace SodaMachineLibrary.Tests
             SodaMachineLogic logic = new SodaMachineLogic(da);
 
             int actual = logic.GetSodaInventory().Count();
-            int expected = 8;
+            int expected = 21;
 
             Assert.Equal(expected, actual);
         }
@@ -168,7 +168,7 @@ namespace SodaMachineLibrary.Tests
             JSONDataAccess da = new JSONDataAccess();
             SodaMachineLogic logic = new SodaMachineLogic(da);
 
-            int expected = 3;
+            int expected = 4;
             int actual = logic.ListTypesOfSoda().Count();
 
             Assert.Equal(expected, actual);
@@ -179,12 +179,12 @@ namespace SodaMachineLibrary.Tests
         {
             JSONDataAccess da = new JSONDataAccess();
             SodaMachineLogic logic = new SodaMachineLogic(da);
-            string user = "test";
-            decimal money = 0.25M;
+            string user = "user1";
+            decimal money = 1M;
 
             logic.MoneyInserted(user, money);
 
-            decimal expected = money;
+            decimal expected = 14M;
             decimal actual = da.UserCredit[user];
 
             Assert.Equal(expected, actual);
@@ -202,8 +202,8 @@ namespace SodaMachineLibrary.Tests
         {
             JSONDataAccess da = new JSONDataAccess();
             SodaMachineLogic logic = new SodaMachineLogic(da);
-            string user1 = "test";
-            string user2 = "tim";
+            string user1 = "user1";
+            string user2 = "user2";
             decimal money = 0.25M;
             decimal user2Money = 0.10M;
 
@@ -211,7 +211,7 @@ namespace SodaMachineLibrary.Tests
             logic.MoneyInserted(user2, user2Money);
             logic.MoneyInserted(user1, money);
 
-            decimal expected = user2Money;
+            decimal expected = 5.2M;
             decimal actual = da.UserCredit[user2];
 
             Assert.Equal(expected, actual);
