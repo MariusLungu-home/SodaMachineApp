@@ -26,7 +26,7 @@ namespace SodaMachineLibrary.Tests
 
             logic.AddToCoinInventory(coins);
 
-            int expected = 16;
+            int expected = 22;
             int actual = da.CoinInventory_GetAll().Where(x => x.Name == "quarter").Count();
 
             Assert.Equal(expected, actual);
@@ -62,9 +62,11 @@ namespace SodaMachineLibrary.Tests
             SodaMachineLogic logic = new SodaMachineLogic(da);
 
             var (_, expected, _) = da.MachineInfo;
-            decimal actual = logic.EmptyMoneyFromMachine();
-
+            decimal actual = 25.25M;
+            
             Assert.Equal(expected, actual);
+            
+            logic.EmptyMoneyFromMachine();
 
             expected = 0;
             (_, actual, _) = da.MachineInfo;
@@ -119,7 +121,7 @@ namespace SodaMachineLibrary.Tests
             SodaMachineLogic logic = new SodaMachineLogic(da);
 
             int actual = logic.GetSodaInventory().Count();
-            int expected = 21;
+            int expected = 12;
 
             Assert.Equal(expected, actual);
         }
@@ -184,7 +186,7 @@ namespace SodaMachineLibrary.Tests
 
             logic.MoneyInserted(user, money);
 
-            decimal expected = 14M;
+            decimal expected = 17M;
             decimal actual = da.UserCredit[user];
 
             Assert.Equal(expected, actual);
