@@ -82,11 +82,11 @@ namespace SodaMachineLibrary.DataAccess
             // read the JSON file
             var fileAsText = File.ReadAllText(_coinsFileLocation, Encoding.UTF8);
             // convert the JSON to a list of CoinModel
-            var coinList = JsonConvert.DeserializeObject<List<CoinModel>>(fileAsText);
+            List<CoinModel> coinList = JsonConvert.DeserializeObject<List<CoinModel>>(fileAsText);
             // get the coins to withdraw
-            var coinsToWithdraw = coinList.Where(x => x.Amount == coinValue).Take(quantity).ToList();
-            // remove the coins from the list
-            coinList.RemoveAll(x => x.Amount == coinValue);
+            List<CoinModel> coinsToWithdraw = coinList.Where(x => x.Amount == coinValue).Take(quantity).ToList();
+            // remove the coinsToWithdraw from the coinList
+            coinList.RemoveAll(x => x.Amount == coinValue && coinsToWithdraw.Contains(x));
             // convert the list back to JSON
             var updatedJson = JsonConvert.SerializeObject(coinList);
             // update the JSON file

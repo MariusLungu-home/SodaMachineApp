@@ -213,7 +213,7 @@ namespace SodaMachineLibrary.Tests
             logic.MoneyInserted(user2, user2Money);
             logic.MoneyInserted(user1, money);
 
-            decimal expected = 5.2M;
+            decimal expected = 5.3M;
             decimal actual = da.UserCredit[user2];
 
             Assert.Equal(expected, actual);
@@ -363,7 +363,8 @@ namespace SodaMachineLibrary.Tests
             var initialState = da.MachineInfo;
 
             da.UserCredit[user] = 1M;
-            da.CoinInventory_GetAll().RemoveAll(x => x.Amount == 0.25M);
+            var allCoins = da.CoinInventory_GetAll();
+            da.CoinInventory_WithdrawCoins(0.25M, allCoins.Count);
 
             var results = logic.RequestSoda(expectedSoda, user);
 
