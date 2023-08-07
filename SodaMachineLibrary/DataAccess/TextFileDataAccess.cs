@@ -203,32 +203,98 @@ namespace SodaMachineLibrary.DataAccess
 
         public SodaModel SodaInventory_GetSoda(SodaModel soda, decimal amount)
         {
-            throw new NotImplementedException();
+            var sodas = RetrieveSodas();
+            var outputSoda = sodas.FirstOrDefault(x => x.Name == soda.Name && x.SlotOccupied == soda.SlotOccupied);
+
+            if (outputSoda != null)
+            {
+                var info = RetrieveMachineInfo();
+                info.cashOnHand += amount;
+                info.totalIncome += amount;
+                SaveMachineInfo(info.sodaPrice, info.cashOnHand, info.totalIncome); 
+            }
+
+            return outputSoda;
         }
 
         public List<SodaModel> SodaInventory_GetTypes()
         {
-            throw new NotImplementedException();
+            var sodas = RetrieveSodas();
+            var sodaTypes = sodas.GroupBy(x => x.Name).Select(x => x.First()).ToList();
+            return sodaTypes;
+        }
+
+        public Dictionary<string, decimal> RetrieveUserCredit()
+        { 
+            var lines = File.ReadAllLines(userCreditTextFile);
+            Dictionary<string, decimal> output = new Dictionary<string, decimal>();
+
+            try
+            {
+                foreach (var line in lines)
+                {
+                    var data = line.Split(',');
+                    output.Add(data[0], decimal.Parse(data[1]));
+                }
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                throw new Exception("Missing data in the User Credit text file.", ex);
+            }
+            catch
+            { 
+               throw;
+            }
+
+            return output;
+        }
+
+        public void SaveUserCredit(Dictionary<string, decimal> userCredit)
+        {
+            File.WriteAllLines(userCreditTextFile, userCredit.Select(uc => $"{uc.Key},{uc.Value}"));
         }
 
         public void UserCredit_Clear(string userId)
         {
-            throw new NotImplementedException();
+            var credits = RetrieveUserCredit();
+            credits[userId] = 0;
+            SaveUserCredit(credits);
         }
 
         public void UserCredit_Deposit(string userId)
         {
-            throw new NotImplementedException();
+            var credits = RetrieveUserCredit();
+            if (!credits.ContainsKey(userId))
+            {
+                throw new Exception("User not found for deposit.");
+            }
+            var info = RetrieveMachineInfo();
+            info.cashOnHand += credits[userId];
+            info.totalIncome += credits[userId];
+            
+            SaveMachineInfo(info.sodaPrice,info.cashOnHand, info.totalIncome);
+            
+            credits.Remove(userId);
+
+            SaveUserCredit(credits);
         }
 
         public void UserCredit_Insert(string userId, decimal amount)
         {
-            throw new NotImplementedException();
+            var credits = RetrieveUserCredit();
+            credits.TryGetValue(userId, out decimal currentCredit);
+
+            credits[userId] = currentCredit + amount;
+
+            SaveUserCredit(credits); 
         }
 
         public decimal UserCredit_Total(string userId)
         {
-            throw new NotImplementedException();
+            var credits = RetrieveUserCredit();
+            credits.TryGetValue(userId, out decimal currentCredit);
+
+            return currentCredit;
         }
     }
 }
