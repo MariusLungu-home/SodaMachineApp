@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SodaMachineLibrary", "SodaM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SodaMachineLibrary.Tests", "SodaMachineLibrary.Tests\SodaMachineLibrary.Tests.csproj", "{A328DAD8-D752-4030-A849-559A83AC86A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SodaMachineConsoleInterface", "SodaMachineConsoleInterface\SodaMachineConsoleInterface.csproj", "{2F2C2779-130D-4448-B4DE-678E3E6830BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A328DAD8-D752-4030-A849-559A83AC86A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A328DAD8-D752-4030-A849-559A83AC86A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A328DAD8-D752-4030-A849-559A83AC86A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F2C2779-130D-4448-B4DE-678E3E6830BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F2C2779-130D-4448-B4DE-678E3E6830BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F2C2779-130D-4448-B4DE-678E3E6830BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F2C2779-130D-4448-B4DE-678E3E6830BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
