@@ -4,10 +4,12 @@ using Microsoft.Extensions.Configuration;
 using SodaMachineLibrary;
 using SodaMachineLibrary.DataAccess;
 using SodaMachineLibrary.Logic;
+using SodaMachineLibrary.Models;
+using System.Xml.Linq;
 
 namespace SodaMachineConsoleUI;
 
-internal class Program
+public class Program
 {
     private static ServiceProvider _serviceProvider;
 
@@ -16,6 +18,7 @@ internal class Program
         RegisterServices();
         string userSelection = string.Empty;
         Console.WriteLine("Welcome to our Soda Machine");
+        string userId = Guid.NewGuid().ToString();
 
         do
         {
@@ -26,15 +29,22 @@ internal class Program
                 case "1":
                     ShowSodaPrice();
                     break;
-                case "2":// List soda options
+                case "2":
+                    ListSodaOptions();
                     break;
-                case "3":// Show amount deposited
+                case "3":
+                    ShowAmountDeposited(userId);
                     break;
-                case "4":// Deposit money
+                case "4":
+                    Console.WriteLine("How much money do you want to deposit?");
+                    var amount = Console.ReadLine();
+                    DepositMoney(userId, amount);
                     break;
-                case "5":// Cancel transaction
+                case "5":
+                    CancelTransaction(userId);
                     break;
-                case "6":// Buy soda
+                case "6":
+                    BuySoda(userId);
                     break;
 
                 case "9":// Close machine
@@ -57,10 +67,87 @@ internal class Program
         Console.ReadLine();
     }
 
+    private static void PressAnyKeyToContinue() 
+    {
+        Console.WriteLine("\n\n\nPress return to continue..");
+        Console.ReadLine();
+    }
+
     private static void ShowSodaPrice()
     {
-        _serviceProvider.GetService<ISodaMachineLogic>().GetSodaPrice();
-        Console.WriteLine($"The soda price is 1$");
+        var sodaPrice = 1;//_serviceProvider.GetService<ISodaMachineLogic>().GetSodaPrice();
+        Console.Clear();
+        Console.WriteLine($"The soda price is {sodaPrice}$");
+        PressAnyKeyToContinue();
+    }
+
+    private static void ShowAmountDeposited(string userId)
+    {
+        // get user id
+        var amountDeposited = 1; // _serviceProvider.GetService<ISodaMachineLogic>().GetMoneyInsertedTotal(userId);
+        Console.WriteLine($"The amount deposited is: {amountDeposited}$");
+        
+        PressAnyKeyToContinue();
+    }
+
+    private static void DepositMoney(string userId, string amount)
+    {
+        var amountDeposited = _serviceProvider.GetService<ISodaMachineLogic>().MoneyInserted(userId, decimal.Parse(amount));
+        Console.WriteLine($"The amount deposited is: {amountDeposited}$");
+        PressAnyKeyToContinue();
+    }
+    
+    private static void CancelTransaction(string userId)
+    {
+        _serviceProvider.GetService<ISodaMachineLogic>().IssueFullRefund(userId);
+        Console.WriteLine($"The transaction has been cancelled, please collect your credit.");
+        PressAnyKeyToContinue();
+    }
+
+    private static void BuySoda(string userId)
+    { 
+        (SodaModel soda, List<CoinModel> coins, string errorMessage)soda = _serviceProvider.GetService<ISodaMachineLogic>().RequestSoda(new SodaModel(), userId);
+        if (soda.errorMessage != string.Empty)
+        {
+            Console.WriteLine($"The transaction has been cancelled, please collect your credit.");
+        }
+        else
+        {
+            Console.WriteLine($"You have bought a {soda.soda.Name}.");
+            Console.WriteLine($"Please collect your change: {soda.coins.Count} coins.");
+        }
+
+        PressAnyKeyToContinue();
+    }
+
+    private static void ListSodaOptions()
+    {
+        Console.Clear();
+        Console.WriteLine("The soda options are:");
+        var sodaOptions = new List<SodaModel>() 
+        { 
+            new SodaModel()
+            {
+                Name = "Coke",
+                SlotOccupied = "1"
+            },
+            new SodaModel()
+            {
+                Name = "Coke",
+                SlotOccupied = "1"
+            },
+            new SodaModel()
+            {
+                Name = "Fanta",
+                SlotOccupied = "2"
+            },
+        };
+        //_serviceProvider.GetService<ISodaMachineLogic>().GetSodaInventory();
+        foreach (var soda in sodaOptions)
+        {
+            Console.WriteLine($"{soda.Name} - Slot: {soda.SlotOccupied}");
+        }
+        PressAnyKeyToContinue();
     }
 
     private static string ShowMenu()
@@ -84,7 +171,7 @@ internal class Program
         var collection = new ServiceCollection();
         
         IConfiguration config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", true, true)
+            .AddJsonFile("appSettings.json", true, true)
             .Build();
 
         collection.AddSingleton<IConfiguration>(config);
