@@ -15,7 +15,6 @@ internal class Program
     {
         RegisterServices();
         string userSelection = string.Empty;
-        
         Console.WriteLine("Welcome to our Soda Machine");
 
         do
@@ -24,7 +23,8 @@ internal class Program
 
             switch (userSelection)
             {
-                case "1":// Show soda price
+                case "1":
+                    ShowSodaPrice();
                     break;
                 case "2":// List soda options
                     break;
@@ -55,6 +55,12 @@ internal class Program
         Console.WriteLine("Press return to quit..");
 
         Console.ReadLine();
+    }
+
+    private static void ShowSodaPrice()
+    {
+        _serviceProvider.GetService<ISodaMachineLogic>().GetSodaPrice();
+        Console.WriteLine($"The soda price is 1$");
     }
 
     private static string ShowMenu()
