@@ -19,7 +19,7 @@ public class Program
         string userSelection = string.Empty;
         Console.WriteLine("Welcome to our Soda Machine");
         string userId = Guid.NewGuid().ToString();
-
+        string sodaId = string.Empty;
         do
         {
             userSelection = ShowMenu();
@@ -30,7 +30,7 @@ public class Program
                     ShowSodaPrice();
                     break;
                 case "2":
-                    ListSodaOptions();
+                    ListSodaOptions(false);
                     break;
                 case "3":
                     ShowAmountDeposited(userId);
@@ -45,8 +45,8 @@ public class Program
                     break;
                 case "6":
                     Console.WriteLine("Select soda from the machine:");
-                    ListSodaOptions();
-                    BuySoda(userId);
+                    sodaId = ListSodaOptions(true);
+                    //BuySoda(sodaModel, userId);
                     break;
 
                 case "9":// Close machine
@@ -71,8 +71,14 @@ public class Program
 
     private static void PressAnyKeyToContinue() 
     {
-        Console.WriteLine("\n\n\nPress return to continue..");
+        Console.WriteLine("\n\n\nPress return to continue...");
         Console.ReadLine();
+    }
+
+    private static string SelectSoda()
+    {
+        Console.WriteLine("\n\n\nSelect your soda:");
+        return Console.ReadLine();
     }
 
     private static void ShowSodaPrice()
@@ -106,9 +112,9 @@ public class Program
         PressAnyKeyToContinue();
     }
 
-    private static void BuySoda(string userId)
+    private static void BuySoda(SodaModel sodaModel, string userId)
     { 
-        (SodaModel soda, List<CoinModel> coins, string errorMessage)soda = _serviceProvider.GetService<ISodaMachineLogic>().RequestSoda(new SodaModel(), userId);
+        (SodaModel soda, List<CoinModel> coins, string errorMessage)soda = _serviceProvider.GetService<ISodaMachineLogic>().RequestSoda(sodaModel, userId);
         if (soda.errorMessage != string.Empty)
         {
             Console.WriteLine($"The transaction has been cancelled, please collect your credit.");
@@ -122,16 +128,21 @@ public class Program
         PressAnyKeyToContinue();
     }
 
-    private static void ListSodaOptions()
+    private static string ListSodaOptions(bool isBuying)
     {
         Console.Clear();
         Console.WriteLine("The soda options are:");
         var sodaOptions = _serviceProvider.GetService<ISodaMachineLogic>().GetSodaInventory();
-        foreach (var soda in sodaOptions)
+        for (int i = 0; i < sodaOptions.Count; i++)
         {
-            Console.WriteLine($"{soda.Name} - Slot: {soda.SlotOccupied}");
+            Console.WriteLine($"{i}:{sodaOptions[i].Name} - Slot:{sodaOptions[i].SlotOccupied}");
+        }
+        if (isBuying)
+        {
+            return SelectSoda();
         }
         PressAnyKeyToContinue();
+        return string.Empty;
     }
 
     private static string ShowMenu()
