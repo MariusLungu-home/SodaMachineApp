@@ -19,7 +19,8 @@ public class Program
         string userSelection = string.Empty;
         Console.WriteLine("Welcome to our Soda Machine");
         string userId = Guid.NewGuid().ToString();
-        string sodaId = string.Empty;
+        SodaModel sodaModel = new();
+
         do
         {
             userSelection = ShowMenu();
@@ -45,8 +46,8 @@ public class Program
                     break;
                 case "6":
                     Console.WriteLine("Select soda from the machine:");
-                    sodaId = ListSodaOptions(true);
-                    //BuySoda(sodaModel, userId);
+                    sodaModel = ListSodaOptions(true).Item2;
+                    BuySoda(sodaModel, userId);
                     break;
 
                 case "9":// Close machine
@@ -73,12 +74,6 @@ public class Program
     {
         Console.WriteLine("\n\n\nPress return to continue...");
         Console.ReadLine();
-    }
-
-    private static string SelectSoda()
-    {
-        Console.WriteLine("\n\n\nSelect your soda:");
-        return Console.ReadLine();
     }
 
     private static void ShowSodaPrice()
@@ -122,27 +117,35 @@ public class Program
         else
         {
             Console.WriteLine($"You have bought a {soda.soda.Name}.");
-            Console.WriteLine($"Please collect your change: {soda.coins.Count} coins.");
+            Console.WriteLine($"Please collect your change: {soda.coins.Count} coins: {String.Join(", ", soda.coins.Select(col => col.Name))}");
         }
 
         PressAnyKeyToContinue();
     }
 
-    private static string ListSodaOptions(bool isBuying)
+    private static (string, SodaModel) ListSodaOptions(bool isBuying)
     {
         Console.Clear();
         Console.WriteLine("The soda options are:");
         var sodaOptions = _serviceProvider.GetService<ISodaMachineLogic>().GetSodaInventory();
         for (int i = 0; i < sodaOptions.Count; i++)
         {
-            Console.WriteLine($"{i}:{sodaOptions[i].Name} - Slot:{sodaOptions[i].SlotOccupied}");
+            Console.WriteLine($"{i}:  {sodaOptions[i].Name}, slot:{sodaOptions[i].SlotOccupied}");
         }
         if (isBuying)
         {
-            return SelectSoda();
+            Console.WriteLine("Please select the number of the soda you want to buy:");
+            int userIndex = int.Parse(Console.ReadLine());
+            SodaModel sodaModel = sodaOptions.ElementAt<SodaModel>(userIndex);
+            
+            return (string.Empty, sodaModel);
         }
-        PressAnyKeyToContinue();
-        return string.Empty;
+        else 
+        {
+            PressAnyKeyToContinue();
+
+            return (string.Empty, new SodaModel());
+        }
     }
 
     private static string ShowMenu()
@@ -157,7 +160,9 @@ public class Program
         Console.WriteLine("6: Buy soda");
 
         Console.WriteLine("9: Close machine");
-    
+
+        Console.WriteLine("\n\nYour option:");
+
         return Console.ReadLine();
     }
 
