@@ -11,15 +11,18 @@ namespace SodaMachineConsoleUI;
 
 public class Program
 {
-    private static ServiceProvider _serviceProvider;
-
+    private static IServiceProvider _serviceProvider;
+    private static ISodaMachineLogic _sodaMachinelogic;
+    private static string userId;
     static void Main(string[] args)
     {
         RegisterServices();
+
+        _sodaMachinelogic = _serviceProvider.GetService<ISodaMachineLogic>();
+        userId = new Guid().ToString();
+
         string userSelection = string.Empty;
         Console.WriteLine("Welcome to our Soda Machine");
-        string userId = Guid.NewGuid().ToString();
-        SodaModel sodaModel = new();
 
         do
         {
@@ -31,23 +34,19 @@ public class Program
                     ShowSodaPrice();
                     break;
                 case "2":
-                    ListSodaOptions(false);
+                    ListSodaOptions();
                     break;
                 case "3":
-                    ShowAmountDeposited(userId);
+                    ShowAmountDeposited();
                     break;
                 case "4":
-                    Console.WriteLine("How much money do you want to deposit?");
-                    var amount = Console.ReadLine();
-                    DepositMoney(userId, amount);
+                    DepositMoney();
                     break;
                 case "5":
-                    CancelTransaction(userId);
+                    CancelTransaction();
                     break;
                 case "6":
-                    Console.WriteLine("Select soda from the machine:");
-                    sodaModel = ListSodaOptions(true).Item2;
-                    BuySoda(sodaModel, userId);
+                    RequestSoda();
                     break;
 
                 case "9":// Close machine
@@ -78,74 +77,100 @@ public class Program
 
     private static void ShowSodaPrice()
     {
-        var sodaPrice = _serviceProvider.GetService<ISodaMachineLogic>().GetSodaPrice();
+        var sodaPrice = _sodaMachinelogic.GetSodaPrice();
         Console.Clear();
         Console.WriteLine($"The soda price is {sodaPrice}$");
         PressAnyKeyToContinue();
     }
 
-    private static void ShowAmountDeposited(string userId)
+    private static void ShowAmountDeposited()
     {
-        // get user id
-        var amountDeposited = _serviceProvider.GetService<ISodaMachineLogic>().GetMoneyInsertedTotal(userId);
+        var amountDeposited = _sodaMachinelogic.GetMoneyInsertedTotal(userId);
         Console.WriteLine($"The amount deposited is: {amountDeposited}$");
         
         PressAnyKeyToContinue();
     }
 
-    private static void DepositMoney(string userId, string amount)
+    private static void DepositMoney()
     {
-        var amountDeposited = _serviceProvider.GetService<ISodaMachineLogic>().MoneyInserted(userId, decimal.Parse(amount));
-        Console.WriteLine($"The amount deposited is: {amountDeposited}$");
+        // get what to deposit
+        Console.WriteLine("How much would you like to add to the machine: ");
+        string amountText = Console.ReadLine();
+
+        bool isValidAmount = decimal.TryParse(amountText, out decimal amountAdded);
+
+        // deposit that amount
+        _sodaMachinelogic.MoneyInserted(userId, amountAdded);
+
         PressAnyKeyToContinue();
     }
     
-    private static void CancelTransaction(string userId)
+    private static void CancelTransaction()
     {
-        _serviceProvider.GetService<ISodaMachineLogic>().IssueFullRefund(userId);
-        Console.WriteLine($"The transaction has been cancelled, please collect your credit.");
+        var amountDeposited = _sodaMachinelogic.GetMoneyInsertedTotal(userId);
+        _sodaMachinelogic.IssueFullRefund(userId);
+        Console.WriteLine($"The transaction has been cancelled, please collect your credit: {amountDeposited}$");
         PressAnyKeyToContinue();
     }
 
-    private static void BuySoda(SodaModel sodaModel, string userId)
-    { 
-        (SodaModel soda, List<CoinModel> coins, string errorMessage)soda = _serviceProvider.GetService<ISodaMachineLogic>().RequestSoda(sodaModel, userId);
-        if (soda.errorMessage != string.Empty)
-        {
-            Console.WriteLine($"The transaction has been cancelled, please collect your credit.");
-        }
-        else
-        {
-            Console.WriteLine($"You have bought a {soda.soda.Name}.");
-            Console.WriteLine($"Please collect your change: {soda.coins.Count} coins: {String.Join(", ", soda.coins.Select(col => col.Name))}");
-        }
-
-        PressAnyKeyToContinue();
-    }
-
-    private static (string, SodaModel) ListSodaOptions(bool isBuying)
+    private static void RequestSoda()
     {
-        Console.Clear();
-        Console.WriteLine("The soda options are:");
-        var sodaOptions = _serviceProvider.GetService<ISodaMachineLogic>().GetSodaInventory();
-        for (int i = 0; i < sodaOptions.Count; i++)
+        // identify which soda the user wants
+        var sodas = _sodaMachinelogic.ListTypesOfSoda();
+        var i = 1;
+        
+        Console.WriteLine("Select soda from the machine:");
+        sodas.ForEach(x => Console.WriteLine($"{i++ } - {x.Name}"));
+
+        string sodaIdentifier = Console.ReadLine();
+        bool isValidSodaIdentifier = int.TryParse(sodaIdentifier, out int sodaIndex);
+        SodaModel soda = new();
+
+        try
         {
-            Console.WriteLine($"{i}:  {sodaOptions[i].Name}, slot:{sodaOptions[i].SlotOccupied}");
+            soda = sodas[sodaIndex - 1];
         }
-        if (isBuying)
-        {
-            Console.WriteLine("Please select the number of the soda you want to buy:");
-            int userIndex = int.Parse(Console.ReadLine());
-            SodaModel sodaModel = sodaOptions.ElementAt<SodaModel>(userIndex);
-            
-            return (string.Empty, sodaModel);
-        }
-        else 
+        catch (Exception)
         {
             PressAnyKeyToContinue();
 
-            return (string.Empty, new SodaModel());
+            throw;
         }
+
+        // request that soda
+        var results = _sodaMachinelogic.RequestSoda(sodas[sodaIndex - 1], userId);
+
+        // handle the response
+        if (results.errorMessage.Length > 0)
+        {
+            Console.WriteLine(results.errorMessage);
+        }
+        else 
+        {
+            Console.Clear();
+            Console.WriteLine($"Please pick up your {results.soda.Name}");
+
+            if (results.change.Count> 0)
+            {
+                Console.WriteLine($"Here is your change:");
+                results.change.ForEach(x => Console.WriteLine($"{x.Name}"));
+            }
+            else
+            { 
+                Console.WriteLine("You used the exact amount to buy a soda, no need to refund.");
+            }
+        }
+
+        PressAnyKeyToContinue();
+    }
+
+    private static void ListSodaOptions()
+    {
+        Console.Clear();
+        Console.WriteLine("The soda options are:");
+        var sodaOptions = _sodaMachinelogic.ListTypesOfSoda();
+        sodaOptions.ForEach(x => Console.WriteLine(x.Name));
+        PressAnyKeyToContinue();
     }
 
     private static string ShowMenu()
