@@ -44,6 +44,8 @@ public class Program
                     CancelTransaction(userId);
                     break;
                 case "6":
+                    Console.WriteLine("Select soda from the machine:");
+                    ListSodaOptions();
                     BuySoda(userId);
                     break;
 
@@ -75,7 +77,7 @@ public class Program
 
     private static void ShowSodaPrice()
     {
-        var sodaPrice = 1;//_serviceProvider.GetService<ISodaMachineLogic>().GetSodaPrice();
+        var sodaPrice = _serviceProvider.GetService<ISodaMachineLogic>().GetSodaPrice();
         Console.Clear();
         Console.WriteLine($"The soda price is {sodaPrice}$");
         PressAnyKeyToContinue();
@@ -84,7 +86,7 @@ public class Program
     private static void ShowAmountDeposited(string userId)
     {
         // get user id
-        var amountDeposited = 1; // _serviceProvider.GetService<ISodaMachineLogic>().GetMoneyInsertedTotal(userId);
+        var amountDeposited = _serviceProvider.GetService<ISodaMachineLogic>().GetMoneyInsertedTotal(userId);
         Console.WriteLine($"The amount deposited is: {amountDeposited}$");
         
         PressAnyKeyToContinue();
@@ -124,25 +126,7 @@ public class Program
     {
         Console.Clear();
         Console.WriteLine("The soda options are:");
-        var sodaOptions = new List<SodaModel>() 
-        { 
-            new SodaModel()
-            {
-                Name = "Coke",
-                SlotOccupied = "1"
-            },
-            new SodaModel()
-            {
-                Name = "Coke",
-                SlotOccupied = "1"
-            },
-            new SodaModel()
-            {
-                Name = "Fanta",
-                SlotOccupied = "2"
-            },
-        };
-        //_serviceProvider.GetService<ISodaMachineLogic>().GetSodaInventory();
+        var sodaOptions = _serviceProvider.GetService<ISodaMachineLogic>().GetSodaInventory();
         foreach (var soda in sodaOptions)
         {
             Console.WriteLine($"{soda.Name} - Slot: {soda.SlotOccupied}");
