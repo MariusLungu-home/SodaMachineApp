@@ -11,9 +11,9 @@ namespace SodaMachineConsoleUI;
 
 public class Program
 {
-    private static IServiceProvider _serviceProvider;
-    private static ISodaMachineLogic _sodaMachinelogic;
-    private static string userId;
+    private static IServiceProvider? _serviceProvider;
+    private static ISodaMachineLogic? _sodaMachinelogic;
+    private static string? userId;
     static void Main(string[] args)
     {
         RegisterServices();
@@ -21,7 +21,7 @@ public class Program
         _sodaMachinelogic = _serviceProvider.GetService<ISodaMachineLogic>();
         userId = new Guid().ToString();
 
-        string userSelection = string.Empty;
+        string? userSelection = string.Empty;
         Console.WriteLine("Welcome to our Soda Machine");
 
         do
@@ -77,7 +77,7 @@ public class Program
 
     private static void ShowSodaPrice()
     {
-        var sodaPrice = _sodaMachinelogic.GetSodaPrice();
+        var sodaPrice = _sodaMachinelogic!.GetSodaPrice();
         Console.Clear();
         Console.WriteLine($"The soda price is {sodaPrice}$");
         PressAnyKeyToContinue();
@@ -85,7 +85,7 @@ public class Program
 
     private static void ShowAmountDeposited()
     {
-        var amountDeposited = _sodaMachinelogic.GetMoneyInsertedTotal(userId);
+        decimal? amountDeposited = _sodaMachinelogic!.GetMoneyInsertedTotal(userId!);
         Console.WriteLine($"The amount deposited is: {amountDeposited}$");
         
         PressAnyKeyToContinue();
@@ -95,20 +95,20 @@ public class Program
     {
         // get what to deposit
         Console.WriteLine("How much would you like to add to the machine: ");
-        string amountText = Console.ReadLine();
+        string? amountText = Console.ReadLine();
 
-        bool isValidAmount = decimal.TryParse(amountText, out decimal amountAdded);
+        bool? isValidAmount = decimal.TryParse(amountText, out decimal amountAdded);
 
         // deposit that amount
-        _sodaMachinelogic.MoneyInserted(userId, amountAdded);
+        _sodaMachinelogic!.MoneyInserted(userId!, amountAdded);
 
         PressAnyKeyToContinue();
     }
     
     private static void CancelTransaction()
     {
-        var amountDeposited = _sodaMachinelogic.GetMoneyInsertedTotal(userId);
-        _sodaMachinelogic.IssueFullRefund(userId);
+        var amountDeposited = _sodaMachinelogic!.GetMoneyInsertedTotal(userId!);
+        _sodaMachinelogic!.IssueFullRefund(userId!);
         Console.WriteLine($"The transaction has been cancelled, please collect your credit: {amountDeposited}$");
         PressAnyKeyToContinue();
     }
@@ -116,15 +116,15 @@ public class Program
     private static void RequestSoda()
     {
         // identify which soda the user wants
-        var sodas = _sodaMachinelogic.ListTypesOfSoda();
+        List<SodaModel> sodas = _sodaMachinelogic!.ListTypesOfSoda();
         var i = 1;
         
         Console.WriteLine("Select soda from the machine:");
         sodas.ForEach(x => Console.WriteLine($"{i++ } - {x.Name}"));
 
-        string sodaIdentifier = Console.ReadLine();
-        bool isValidSodaIdentifier = int.TryParse(sodaIdentifier, out int sodaIndex);
-        SodaModel soda = new();
+        string? sodaIdentifier = Console.ReadLine();
+        bool? isValidSodaIdentifier = int.TryParse(sodaIdentifier, out int sodaIndex);
+        SodaModel? soda = new();
 
         try
         {
@@ -138,7 +138,7 @@ public class Program
         }
 
         // request that soda
-        var results = _sodaMachinelogic.RequestSoda(sodas[sodaIndex - 1], userId);
+        var results = _sodaMachinelogic.RequestSoda(sodas[sodaIndex - 1], userId!);
 
         // handle the response
         if (results.errorMessage.Length > 0)
@@ -168,7 +168,7 @@ public class Program
     {
         Console.Clear();
         Console.WriteLine("The soda options are:");
-        var sodaOptions = _sodaMachinelogic.ListTypesOfSoda();
+        var sodaOptions = _sodaMachinelogic!.ListTypesOfSoda();
         sodaOptions.ForEach(x => Console.WriteLine(x.Name));
         PressAnyKeyToContinue();
     }
@@ -188,14 +188,14 @@ public class Program
 
         Console.WriteLine("\n\nYour option:");
 
-        return Console.ReadLine();
+        return Console.ReadLine()!;
     }
 
     private static void RegisterServices() 
     {
         var collection = new ServiceCollection();
         
-        IConfiguration config = new ConfigurationBuilder()
+        IConfiguration? config = new ConfigurationBuilder()
             .AddJsonFile("appSettings.json", true, true)
             .Build();
 

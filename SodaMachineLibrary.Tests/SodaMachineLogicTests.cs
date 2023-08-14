@@ -1,11 +1,7 @@
-using System;
 using Xunit;
-using SodaMachineLibrary.DataAccess;
 using SodaMachineLibrary.Logic;
 using SodaMachineLibrary.Models;
 using SodaMachineLibrary.Tests.Mocks;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SodaMachineLibrary.Tests
 {

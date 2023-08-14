@@ -214,7 +214,7 @@ namespace SodaMachineLibrary.DataAccess
                 SaveMachineInfo(info.sodaPrice, info.cashOnHand, info.totalIncome); 
             }
 
-            return outputSoda;
+            return outputSoda!;
         }
 
         public List<SodaModel> SodaInventory_GetTypes()

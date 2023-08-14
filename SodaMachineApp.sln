@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SodaMachineLibrary", "SodaM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SodaMachineLibrary.Tests", "SodaMachineLibrary.Tests\SodaMachineLibrary.Tests.csproj", "{A328DAD8-D752-4030-A849-559A83AC86A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SodaMachineConsoleUI", "SodaMachineConsoleUI\SodaMachineConsoleUI.csproj", "{879AB165-F078-4C0F-A105-555CFA519C74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SodaMachineConsoleUI", "SodaMachineConsoleUI\SodaMachineConsoleUI.csproj", "{879AB165-F078-4C0F-A105-555CFA519C74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SodaMachineRazorUI", "SodaMachineRazorUI\SodaMachineRazorUI.csproj", "{2449C35B-52F6-403C-88F0-F4D90D34F91F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{879AB165-F078-4C0F-A105-555CFA519C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{879AB165-F078-4C0F-A105-555CFA519C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{879AB165-F078-4C0F-A105-555CFA519C74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2449C35B-52F6-403C-88F0-F4D90D34F91F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2449C35B-52F6-403C-88F0-F4D90D34F91F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2449C35B-52F6-403C-88F0-F4D90D34F91F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2449C35B-52F6-403C-88F0-F4D90D34F91F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

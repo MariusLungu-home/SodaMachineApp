@@ -114,7 +114,7 @@ namespace SodaMachineLibrary.Tests.Mocks
                 MachineInfo = info;
             }
 
-            return outputSoda;
+            return outputSoda!;
         }
 
         public List<SodaModel> SodaInventory_GetTypes()

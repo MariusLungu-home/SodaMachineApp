@@ -79,7 +79,7 @@ namespace SodaMachineLibrary.Logic
 
         public (SodaModel soda, List<CoinModel> change, string errorMessage) RequestSoda(SodaModel soda, string userId)
         {
-            (SodaModel soda, List<CoinModel> change, string errorMessage) output = (null, new List<CoinModel>(), "An unexpected error occurred");
+            (SodaModel soda, List<CoinModel> change, string errorMessage) output = (null!, new List<CoinModel>(), "An unexpected error occurred");
             decimal userCredit = _db.UserCredit_Total(userId);
             decimal sodaCost = _db.MachineInfo_SodaPrice();
 
@@ -101,7 +101,7 @@ namespace SodaMachineLibrary.Logic
                         _db.UserCredit_Clear(userId);
                         output = (sodaToReturn, change, "");
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         output.errorMessage = "There is not enough coins to give you change.";
                     }
@@ -109,7 +109,7 @@ namespace SodaMachineLibrary.Logic
             }
             else // Not enough money
             {
-                output = (null, new List<CoinModel>(), "User did not provide enough change.");
+                output = (null!, new List<CoinModel>(), "User did not provide enough change.");
             }
 
             return output;
