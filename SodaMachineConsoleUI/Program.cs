@@ -1,11 +1,8 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using SodaMachineLibrary;
 using SodaMachineLibrary.DataAccess;
 using SodaMachineLibrary.Logic;
 using SodaMachineLibrary.Models;
-using System.Xml.Linq;
 
 namespace SodaMachineConsoleUI;
 

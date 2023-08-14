@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SodaMachineRazorUI.Data;
+using SodaMachineLibrary.DataAccess;
+using SodaMachineLibrary.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddTransient<IDataAccess, TextFileDataAccess>();
+builder.Services.AddTransient<ISodaMachineLogic, SodaMachineLogic>();
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
