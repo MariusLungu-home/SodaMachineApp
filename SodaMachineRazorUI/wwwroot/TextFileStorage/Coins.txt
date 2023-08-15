@@ -2,12 +2,6 @@ Quarter,0.25
 Quarter,0.25
 Quarter,0.25
 Quarter,0.25
-Quarter,0.25
-Quarter,0.25
-Quarter,0.25
-Dime,0.10
-Dime,0.10
-Dime,0.10
 Dime,0.10
 Dime,0.10
 Dime,0.10

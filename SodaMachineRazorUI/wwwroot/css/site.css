@@ -16,3 +16,22 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.soda-tab {
+    font-size:28px;
+    padding:20px;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-soda {
+    font-size:28px;
+    padding-right:30px;
+    padding-left:30px;
+    padding-top:20px;
+    padding-bottom: 20px;
+    border-radius:10px;
+}
