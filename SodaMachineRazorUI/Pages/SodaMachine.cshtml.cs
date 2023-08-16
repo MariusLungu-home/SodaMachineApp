@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SodaMachineLibrary.Logic;
 using SodaMachineLibrary.Models;
+using System.Security.Claims;
 
 namespace SodaMachineRazorUI.Pages
 {
+    [Authorize]
     public class SodaMachineModel : PageModel
     {
         private readonly ISodaMachineLogic _sodaMachine;
@@ -20,8 +23,14 @@ namespace SodaMachineRazorUI.Pages
         [BindProperty]
         public SodaModel SelectedSoda { get; set; }
 
-        [BindProperty(SupportsGet = true)]
-        public string UserId { get; set; }
+
+        public string UserId 
+        { 
+            get 
+            {
+                return User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+        }
 
         [BindProperty(SupportsGet = true)]
         public string OutputText { get; set; }
@@ -36,11 +45,6 @@ namespace SodaMachineRazorUI.Pages
 
         public void OnGet()
         {
-            if (string.IsNullOrWhiteSpace(UserId))
-            {
-                UserId = Guid.NewGuid().ToString();
-            }
-
             SodaPrice = _sodaMachine.GetSodaPrice();
             DepositedAmount = _sodaMachine.GetMoneyInsertedTotal(UserId);
             SodaOptions = _sodaMachine.ListTypesOfSoda();
@@ -54,7 +58,7 @@ namespace SodaMachineRazorUI.Pages
                 _sodaMachine.MoneyInserted(UserId, Deposit);
             }
 
-            return RedirectToPage(new { UserId });
+            return RedirectToPage();
         }
 
         // Used for requesting soda
@@ -83,7 +87,7 @@ namespace SodaMachineRazorUI.Pages
                 }
             }
 
-            return RedirectToPage(new { UserId, ErrorMessage, OutputText });
+            return RedirectToPage(new { ErrorMessage, OutputText });
         }
 
         // Used for cancelling our deposit
@@ -94,7 +98,7 @@ namespace SodaMachineRazorUI.Pages
 
             OutputText = $"You have been refunded {String.Format("{0:C}", DepositedAmount)}";
 
-            return RedirectToPage(new { UserId, OutputText });
+            return RedirectToPage(new { OutputText });
         }
     }
 }

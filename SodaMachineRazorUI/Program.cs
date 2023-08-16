@@ -13,12 +13,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddTransient<IDataAccess, TextFileDataAccess>();
 builder.Services.AddTransient<ISodaMachineLogic, SodaMachineLogic>();
-
-builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
