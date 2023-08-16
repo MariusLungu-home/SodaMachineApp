@@ -1,0 +1,78 @@
+﻿@page
+@model SodaMachineRazorUI.Pages.AdminCoinInventoryModel
+@{
+    // DONE             display the coins from inventory
+    // DONE (tbd)       add coins to inventory
+    // DONE (tbd)       empty machine of coins
+    // DONE             bonus: menu link to the page in the navigation system - ensure only admin role can see and access the link
+}
+
+@if (String.IsNullOrWhiteSpace(Model.ErrorMessage) == false)
+{
+    <p class="text-danger">
+        @Model.ErrorMessage
+    </p>
+}
+
+<div class="row">
+    <div class="col-sm-8">
+    <h3>Coins in Inventory</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Coin</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var coin in Model.Coins.GroupBy(x=>x.Name).Select(y =>
+                new {
+                    name = y.Key,
+                    quantity = y.Count(),
+                    type = y.First().Amount
+                    }).ToList())
+                {
+                    <tr>
+                        <td>@coin.name</td>
+                        <td>@coin.quantity</td>
+                        <td>@coin.type</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-4">
+        @Html.Raw(Model.OutputText)
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-sm-4">
+        <h3>Deposit Coins</h3>
+        <div class="btn-group" role="group">
+            <form method="post">
+                <input type="hidden" asp-for="Coin.Name" value="Nickle" />
+                <input type="hidden" asp-for="Coin.Amount" value="0.05" />
+                <button type="submit" class="btn btn-primary">@String.Format("{0:C}", 0.05)</button>
+            </form>
+            <form method="post">
+                <input type="hidden" asp-for="Coin.Name" value="Dime" />
+                <input type="hidden" asp-for="Coin.Amount" value="0.1" />
+                <button type="submit" class="btn btn-primary">@String.Format("{0:C}", 0.10)</button>
+            </form>
+            <form method="post">
+                <input type="hidden" asp-for="Coin.Name" value="Quarter" />
+                <input type="hidden" asp-for="Coin.Amount" value="0.25" />
+                <button type="submit" class="btn btn-primary">@String.Format("{0:C}", 0.25)</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <h4>Total income: @Model.TotalIncome</h4>
+        <h4>Cash on hand: @Model.CurrentIncome</h4>
+        <form method="post" asp-page-handler="Empty">
+            <button type="submit" class="btn btn-warning">Empty Coins</button>
+        </form>
+    </div>
+</div>
