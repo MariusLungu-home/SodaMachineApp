@@ -36,7 +36,7 @@ namespace SodaMachineRazorUI.Pages
         // Used to show coins
         public void OnGet()
         {
-            Coins = _sodaMachine.GetCoinInventory();
+            Coins = _sodaMachine.GetCoinInventory().OrderBy(x=>x.Name).ToList();
             CurrentIncome = _sodaMachine.GetCurrentIncome().ToString();
             TotalIncome = _sodaMachine.GetTotalIncome().ToString();
         }

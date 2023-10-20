@@ -1,0 +1,44 @@
+﻿@page
+@model SodaMachineRazorUI.Pages.AdminSodaInventoryModel
+@{
+    ViewData["Title"] = "SodaInventory";
+}
+
+<h1>Soda Inventory</h1>
+
+<div class="row">
+    <div class="col-6">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Slot</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var soda in Model.Sodas)
+                {
+                    <tr>
+                        <td>@soda.Name</td>
+                        <td>@soda.SlotOccupied</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-6">
+        <form method="post">
+            <div class="form-group">
+                <label for="selectedSoda">Select A Soda</label>
+                <select id="selectedSoda" asp-for="@Model.SelectedSoda"
+                        asp-items="@Model.SodaOptions" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label for="selectedSlot">Select A Slot</label>
+                <select id="selectedSlot" asp-for="@Model.SelectedSlot"
+                        asp-items="@Model.SlotOptions" class="form-control"></select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Soda to Inventory</button>
+        </form>
+    </div>
+</div>
