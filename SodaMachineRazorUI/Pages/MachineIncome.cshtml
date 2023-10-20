@@ -1,0 +1,18 @@
+﻿@page
+@model SodaMachineRazorUI.Pages.MachineIncome
+@{
+    ViewData["Title"] = "MachineIncome";
+}
+
+<h1>Machine Income</h1>
+<div class="h3">
+    <strong>Current Income: </strong>@String.Format("{0:C}", Model.CurrentIncome)
+</div>
+<div class="h3">
+    <strong>Total Income: </strong>@String.Format("{0:C}", Model.TotalIncome)
+</div>
+<div>
+    <form method="post">
+        <button type="submit" class="btn btn-primary">Withdraw Current Income</button>
+    </form>
+</div>
